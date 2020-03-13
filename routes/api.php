@@ -17,14 +17,12 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
-Route::middleware('auth:api')->prefix('/users')->group(function() {
+Route::middleware('api')->prefix('/users')->group(function() {
 
-    Route::post('auth', '\App\Http\Controllers\Auth\LoginController@login');
-    Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+    Route::post('auth', 'Auth\LoginController@login');
+    Route::get('logout', 'Auth\LoginController@logout')->middleware('auth');
 
-    // Route::get('create', function () {
-    //     return '/users/create route';
-    // });
+    Route::get('/', 'UsersController@index');
+    Route::get('/{id}', 'UsersController@show');
+    Route::post('/create', 'UsersController@store');
 });
-
-
