@@ -3,3 +3,16 @@
 @import 'variables';
 
 
+.container-fluid {
+    padding-top: 16px !important;
+}
+
+.Action--Toolbar {
+    display: flex;
+    justify-content: space-between;
+    .buttons-actions {
+        button {
+            margin: 0px 4px;
+        }
+    }
+}
