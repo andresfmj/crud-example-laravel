@@ -11,6 +11,11 @@
 |
 */
 
-Route::get('/{route?}', function () {
-    return view('index');
+Route::get('/react/{route?}', function () {
+    return view('react.index');
 })->where('route', '[0-9A-Za-z.\/?]+');
+
+
+Route::get('/', function() {
+    return view('index');
+});
