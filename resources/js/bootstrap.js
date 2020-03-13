@@ -1,13 +1,10 @@
 window._ = require('lodash');
 
-/**
- * We'll load jQuery and the Bootstrap jQuery plugin which provides support
- * for JavaScript based Bootstrap features such as modals and tabs. This
- * code may be modified to fit the specific needs of your application.
- */
-
 require('bootstrap/dist/css/bootstrap.min.css')
- 
+
+window.moment = require('moment')
+window.moment.locale('es')
+
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
@@ -48,3 +45,28 @@ if (token) {
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+
+
+window.checkValidations = (value, rules) => {
+    let isValid = true
+
+    if (rules.required) {
+        isValid = value.trim().length !== 0 && isValid
+    }
+
+    if (rules.min) {
+        isValid = value.trim().length >= rules.min && isValid
+    }
+
+    if (rules.isEmail) {
+        isValid = window.emailValid(value.trim()) && isValid
+    }
+
+    return isValid
+}
+
+
+window.emailValid = (email='') => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
