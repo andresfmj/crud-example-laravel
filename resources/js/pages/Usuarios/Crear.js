@@ -70,7 +70,7 @@ class Crear extends Component {
 
             this.setState({ formSaving: true })
             
-            window.axios.post('/api/v1/users/create', formdata)
+            window.axios.post('/api/v1/users/store', formdata)
                 .then(res => {
                     const response = res.data
                     if (('error' in response && !response.error) || !response.errors) {
