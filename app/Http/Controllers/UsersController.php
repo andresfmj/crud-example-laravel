@@ -26,6 +26,17 @@ class UsersController extends Controller
         ]);
     }
 
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
     
     /**
      * Store a newly created resource in storage.
@@ -95,7 +106,24 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->input();
+        $response = array('error' => false, 'message' => '');
+
+        $user = Usuario::find($id);
+
+        $user->nombre = ucfirst($input['nombre']);
+        
+        if (strlen($input['password']) > 0)
+            $user->password = bcrypt($input['password']);
+        
+        $user->email = $input['email'];
+
+        if ($user->save()) {
+            $response['message'] = trans('view.user_updated');
+        }
+
+        return response()->json($response);
+
     }
 
     /**

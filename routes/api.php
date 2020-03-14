@@ -24,5 +24,17 @@ Route::middleware('api')->prefix('/users')->group(function() {
 
     Route::get('/', 'UsersController@index');
     Route::get('/{id}', 'UsersController@show');
-    Route::post('/create', 'UsersController@store');
+    Route::post('/store', 'UsersController@store');
+    Route::patch('/{id}/update', 'UsersController@update');
+    Route::delete('/{id}/delete', 'UsersController@destroy');
+});
+
+
+Route::middleware('api')->prefix('/citas')->group(function() {
+
+    Route::get('/', 'CitasController@index');
+    Route::get('/{id}', 'CitasController@show');
+    Route::post('/store', 'CitasController@store');
+    Route::patch('/{id}/update', 'CitasController@update');
+    Route::delete('/{id}/delete', 'CitasController@destroy');
 });
