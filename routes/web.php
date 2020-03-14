@@ -19,3 +19,11 @@ Route::get('/react/{route?}', function () {
 Route::get('/', function() {
     return view('index');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/home/users', function(){
+    return view('users.index');
+});
