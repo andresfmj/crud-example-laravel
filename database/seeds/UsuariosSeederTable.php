@@ -14,8 +14,24 @@ class UsuariosSeederTable extends Seeder
     {
         DB::table('usuarios')->insert([
             [
-                'nombre' => 'Andres Fernando', 
-                'email' => 'webmaster@ferdinania.com', 
+                'nombre' => 'User 001', 
+                'email' => 'user001@hdprueba.com', 
+                'password' => bcrypt('as123456'),
+                'api_token' => Str::random('60'),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'nombre' => 'User 002', 
+                'email' => 'user002@hdprueba.com', 
+                'password' => bcrypt('as123456'),
+                'api_token' => Str::random('60'),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'nombre' => 'User 003', 
+                'email' => 'user003@hdprueba.com', 
                 'password' => bcrypt('as123456'),
                 'api_token' => Str::random('60'),
                 'created_at' => date('Y-m-d H:i:s'),
