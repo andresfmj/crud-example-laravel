@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cita;
 use App\Models\Usuario;
+use Auth;
+use Exception;
 use Illuminate\Http\Request;
+use Log;
 use Str;
 
 class UsersController extends Controller
@@ -13,17 +17,23 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = Usuario::all();
+        if ($request->ajax()) {
+            $users = Usuario::all();
+            
+            return response()->json([
+                'error' => count($users) > 0 ? false : true,
+                'res' => [
+                    'rows' => count($users),
+                    'data' => count($users) > 0 ? $users->toArray() : null
+                ]
+            ]);
+        } else {
+            $users = Usuario::paginate(5);
 
-        return response()->json([
-            'error' => count($users) > 0 ? false : true,
-            'res' => [
-                'rows' => count($users),
-                'data' => count($users) > 0 ? $users->toArray() : null
-            ]
-        ]);
+            return view('users.index', ['users' => $users]);
+        }
     }
 
 
@@ -34,7 +44,7 @@ class UsersController extends Controller
      */
     public function create()
     {
-        //
+        return view('users.create');
     }
 
     
@@ -67,7 +77,12 @@ class UsersController extends Controller
             $response['message'] = trans('view.new_user_created');
         }
 
-        return response()->json($response);
+        if ($request->ajax()) {
+            return response()->json($response);
+        } else {
+            return redirect()->route('users');
+        }
+        
     }
 
     /**
@@ -94,7 +109,9 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = Usuario::find($id);
+
+        return view('users.edit', ['user' => $user]);
     }
 
     /**
@@ -107,22 +124,42 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->input();
-        $response = array('error' => false, 'message' => '');
+        $response = array('error' => true, 'message' => '');
 
         $user = Usuario::find($id);
 
-        $user->nombre = ucfirst($input['nombre']);
-        
-        if (strlen($input['password']) > 0)
-            $user->password = bcrypt($input['password']);
-        
-        $user->email = $input['email'];
+        $emailFound = Usuario::where('email', $input['email'])->where('id', '<>', $id)->get();
+        if (count($emailFound) > 0) {
+            if ($request->ajax()) {
+                $response['error'] = true;
+                $response['message'] = trans('view.duplicate_email');
+            } else {
+                $response['message'] = trans('view.duplicate_email');
+            }
 
-        if ($user->save()) {
-            $response['message'] = trans('view.user_updated');
+        } else {
+
+            $user->nombre = ucfirst($input['nombre']);
+
+            if (strlen($input['password']) > 0)
+                $user->password = bcrypt($input['password']);
+            
+            $user->email = $input['email'];
+    
+            if ($user->save()) {
+                $response['message'] = trans('view.user_updated');
+            }
         }
 
-        return response()->json($response);
+        if ($request->ajax()) {
+            return response()->json($response);
+        } else {
+            if (count($emailFound) > 0) {
+                return redirect('/home/users/' . $id . '/edit')->withInput()->withErrors($response['message']);
+            } else {
+                return view('users.edit', ['user' => $user, 'response' => $response]);
+            }
+        }
 
     }
 
@@ -134,6 +171,22 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $response = array('error' => false, 'message' => '');
+
+        try {
+            if (Auth::user()->id == $id) {
+                $response['error'] = true;
+                $response['message'] = trans('view.cannot_remove_user');
+            } else {
+                Usuario::destroy($id);
+                $response['message'] = trans('view.user_removed');
+            }
+        } catch (Exception $e) {
+            $response['error'] = true;
+            $response['message'] = $e->getMessage();
+        }
+
+        return response()->json($response);
+
     }
 }
