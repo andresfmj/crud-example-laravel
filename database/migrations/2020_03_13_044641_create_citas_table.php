@@ -21,6 +21,9 @@ class CreateCitasTable extends Migration
             $table->date('fecha_fin');
             $table->text('descripcion');
 
+            $table->integer('usuario_id')->unsigned()->index();
+            $table->foreign('usuario_id')->references('id')->on('usuarios')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
