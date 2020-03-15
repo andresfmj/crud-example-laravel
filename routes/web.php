@@ -17,13 +17,32 @@ Route::get('/react/{route?}', function () {
 
 
 Route::get('/', function() {
-    return view('index');
+    return redirect('/home');
 });
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(['prefix' => 'home'], function () {
+    
+    Route::get('/', 'HomeController@index')->name('home');    
 
-Route::get('/home/users', function(){
-    return view('users.index');
+    Route::group(['prefix' => 'users'], function () {
+        Route::get('/', 'UsersController@index')->name('users');
+        Route::get('/create', 'UsersController@create');
+        Route::post('/create', 'UsersController@store');
+        Route::get('/{id}/edit', 'UsersController@edit');
+        Route::post('/{id}/edit', 'UsersController@update');
+        Route::post('/{id}/delete', 'UsersController@destroy');
+    });
+
+    Route::group(['prefix' => 'citas'], function () {
+        Route::get('/', 'CitasController@index')->name('citas');
+        Route::get('/create', 'CitasController@create');
+        Route::post('/create', 'CitasController@store');
+        Route::get('/{id}/edit', 'CitasController@edit');
+        Route::post('/{id}/edit', 'CitasController@update');
+        Route::post('/{id}/delete', 'CitasController@destroy');
+    });
+
 });
+
