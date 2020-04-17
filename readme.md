@@ -1,7 +1,10 @@
-# hdprueba
+# crud-example-laravel
 
-Por defecto se usan las plantillas en `blade` para este ejercicios.
+Blade templates are used by default for this workshop.
 
-El frontend en react puede ser habilitado, instalando `node` y `npm` 
-y ejecutando el comando `npm install && npm run dev` en la terminal desde la raiz del proyecto
+React frontend can be enabled by installing `node` and `npm`
+and you should run following command from project root:
+```
+npm install && npm run dev
+```
 
